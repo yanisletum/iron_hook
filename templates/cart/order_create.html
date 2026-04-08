@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Оформление заказа - IRON HOOK{% endblock %}
+
+{% block content %}
+<div style="display: flex; gap: 2rem; flex-wrap: wrap; max-width: 1200px; margin: 0 auto; padding: 20px;">
+    
+    <div style="flex: 2; min-width: 300px; background: white; padding: 2.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee;">
+        <h1 style="color: var(--primary-color); margin-top: 0; margin-bottom: 1.5rem; border-bottom: 2px solid var(--accent-color); padding-bottom: 10px;">
+            Оформление заказа
+        </h1>
+        
+        <style>
+            .checkout-form p { margin-bottom: 20px; }
+            .checkout-form label { display: block; margin-bottom: 8px; font-weight: bold; color: #34495e; }
+            .checkout-form input, .checkout-form textarea {
+                width: 100%; padding: 12px 15px; border: 1px solid #dcdde1; border-radius: 4px; font-size: 1rem; box-sizing: border-box; font-family: inherit; transition: border-color 0.2s;
+            }
+            .checkout-form input:focus, .checkout-form textarea:focus { 
+                border-color: var(--accent-color); outline: none; box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.2); 
+            }
+            .checkout-form .errorlist { color: #e74c3c; list-style: none; padding: 0; margin-top: 5px; font-size: 0.9rem; }
+        </style>
+
+        <form method="post" class="checkout-form" style="display: flex; flex-direction: column;">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <button type="submit" class="btn" style="font-size: 1.2rem; padding: 15px; margin-top: 1rem; background-color: var(--accent-color); color: #1a252f; border: none; border-radius: 4px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#16a085';" onmouseout="this.style.backgroundColor='var(--accent-color)';">
+                Подтвердить заказ
+            </button>
+        </form>
+    </div>
+
+    <div style="flex: 1; min-width: 300px; background: #f8f9fa; padding: 2.5rem; border-radius: 8px; border: 1px solid #ddd; height: fit-content; position: sticky; top: 20px;">
+        <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: var(--primary-color);">Ваш заказ</h3>
+        
+        <ul style="list-style: none; padding: 0; margin-bottom: 1.5rem;">
+            {% for item in cart_items %}
+                <li style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #ccc; flex-wrap: wrap; gap: 10px;">
+                    
+                    <div style="flex: 1; min-width: 150px;">
+                        <strong style="color: #2c3e50; display: block;">{{ item.product.name }}</strong>
+                        
+                        {% if item.variation %}
+                            <span style="display: inline-block; background: var(--accent-color); color: #1a252f; font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; margin-top: 5px;">{{ item.variation }}</span>
+                        {% endif %}
+                        
+                        <div style="color: #7f8c8d; font-size: 0.9rem; margin-top: 5px;">
+                            {{ item.quantity }} шт. x {{ item.price|floatformat:2 }} руб.
+                        </div>
+                    </div>
+                    
+                    <span style="font-weight: bold; font-size: 1.1rem; color: #333; display: flex; align-items: center;">
+                        {{ item.total_price|floatformat:2 }} руб.
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: bold; color: #333; border-top: 2px solid var(--accent-color); padding-top: 20px;">
+            <span>Итого:</span>
+            <span style="color: var(--accent-color);">{{ total_price|floatformat:2 }} руб.</span>
+        </div>
+    </div>
+    
+</div>
+{% endblock %}

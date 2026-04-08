@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты - IRON HOOK{% endblock %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 2rem auto; display: flex; flex-wrap: wrap; gap: 2rem;">
+    
+    <div style="flex: 1; min-width: 300px; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h1 style="color: var(--primary-color); margin-bottom: 1.5rem;">Наши контакты</h1>
+        
+        <div style="margin-bottom: 1.5rem; font-size: 1.1rem;">
+            <p style="margin-bottom: 10px;">📍 <strong>Адрес:</strong> г. Минск, ул. Рыбацкая, д. 1</p>
+            <p style="margin-bottom: 10px;">📞 <strong>Телефон:</strong> +375 (29) 111-22-33</p>
+            <p style="margin-bottom: 10px;">✉️ <strong>Email:</strong> info@ironhook.com</p>
+            <p style="margin-bottom: 10px;">🕒 <strong>Режим работы:</strong> Пн-Вс: 09:00 - 20:00</p>
+        </div>
+        
+        <h3 style="margin-bottom: 1rem; color: var(--accent-color);">Мы в соцсетях:</h3>
+        <p>
+            <a href="#" style="text-decoration: none; font-size: 1.5rem; margin-right: 15px;">📱 Telegram</a>
+            <a href="#" style="text-decoration: none; font-size: 1.5rem;">📸 Instagram</a>
+        </p>
+    </div>
+
+    <div style="flex: 1; min-width: 300px; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Напишите нам</h2>
+        
+        <form action="#" method="post" style="display: flex; flex-direction: column; gap: 15px;">
+            {% csrf_token %}
+            
+            <div>
+                <label for="name" style="font-weight: bold; margin-bottom: 5px; display: block;">Ваше имя</label>
+                <input type="text" id="name" name="name" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            
+            <div>
+                <label for="email" style="font-weight: bold; margin-bottom: 5px; display: block;">Ваш Email</label>
+                <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
+            
+            <div>
+                <label for="message" style="font-weight: bold; margin-bottom: 5px; display: block;">Сообщение</label>
+                <textarea id="message" name="message" rows="5" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: vertical;"></textarea>
+            </div>
+            
+            <button type="submit" class="btn" style="font-size: 1.1rem; padding: 12px;">Отправить сообщение</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ оформлен - IRON HOOK{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 4rem auto; text-align: center; background: white; padding: 4rem 3rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee;">
+    
+    <div style="font-size: 5rem; margin-bottom: 1rem; line-height: 1;">🎉🎣</div>
+    <h1 style="color: var(--accent-color); margin-top: 0; margin-bottom: 1.5rem; font-size: 2.5rem;">Успешный улов!</h1>
+    
+    <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #555; line-height: 1.6;">
+        Отличный выбор, <strong>{{ order.first_name }}</strong>!<br><br>
+        Ваш заказ <strong>№{{ order.id }}</strong> успешно оформлен и передан в обработку.<br>
+        Мы свяжемся с вами в ближайшее время по номеру телефона для уточнения деталей доставки.
+    </p>
+    
+    <a href="{% url 'shop:product_list' %}" class="btn" style="text-decoration: none; display: inline-block; padding: 15px 30px; font-size: 1.1rem; background-color: var(--accent-color); color: #1a252f; border-radius: 4px; font-weight: bold; text-transform: uppercase; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#16a085';" onmouseout="this.style.backgroundColor='var(--accent-color)';">
+        Вернуться к покупкам
+    </a>
+</div>
+{% endblock %}

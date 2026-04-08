@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}О нас - IRON HOOK{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 2rem auto; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); line-height: 1.6;">
+    
+    <h1 style="color: var(--primary-color); margin-bottom: 1.5rem; text-align: center;">Добро пожаловать в IRON HOOK</h1>
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <img src="{% static 'img/about_hero.jpg' %}" alt="Рыбалка с IRON HOOK" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; background: #eee;">
+    </div>
+
+    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Наша философия</h2>
+    <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">
+        Мы в <strong>IRON HOOK</strong> знаем, что рыбалка — это не просто хобби. Это страсть, азарт и философия. Наш магазин создан рыболовами для рыболовов. Мы тщательно отбираем снасти, тестируем их на водоемах и предлагаем вам только то, в чем уверены сами.
+    </p>
+
+    <h2 style="color: var(--accent-color); margin-bottom: 1rem;">Почему выбирают нас?</h2>
+    <ul style="margin-bottom: 1.5rem; padding-left: 20px; font-size: 1.1rem;">
+        <li style="margin-bottom: 10px;"><strong>Только оригинал:</strong> Работаем напрямую с проверенными брендами.</li>
+        <li style="margin-bottom: 10px;"><strong>Честные цены:</strong> Никаких скрытых наценок, мы за прозрачность.</li>
+        <li style="margin-bottom: 10px;"><strong>Экспертность:</strong> Всегда поможем подобрать снасть под ваши задачи и водоем.</li>
+    </ul>
+
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="{% url 'shop:product_list' %}" class="btn" style="text-decoration: none; font-size: 1.2rem; padding: 15px 30px;">Перейти в каталог</a>
+    </div>
+</div>
+{% endblock %}

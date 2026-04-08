@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ product.name }} | IRON HOOK
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    
+    <div style="margin-bottom: 20px; font-size: 0.9rem; color: #7f8c8d;">
+        <a href="/" style="color: var(--primary-color); text-decoration: none;">Главная</a> /
+        <a href="{{ product.category.get_absolute_url }}" style="color: var(--primary-color); text-decoration: none;">{{ product.category.name }}</a> /
+        {{ product.name }}
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 40px;">
+        
+        <div style="flex: 1; min-width: 300px; max-width: 500px;">
+            
+            {% if product.image %}
+                <img id="main-product-image" src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.2s;" title="Нажмите, чтобы увеличить" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            {% else %}
+                <div style="width: 100%; padding-top: 100%; background-color: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                    <span style="color: #999;">Нет фото</span>
+                </div>
+            {% endif %}
+
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;" id="gallery-thumbnails">
+                {% if product.image %}
+                    <img class="gallery-thumb active-thumb" src="{{ product.image.url }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 2px solid var(--accent-color); cursor: pointer; opacity: 1; transition: opacity 0.2s;">
+                {% endif %}
+                
+                {% for p_image in product.images.all %}
+                    <img class="gallery-thumb" src="{{ p_image.image.url }}" alt="Фото {{ product.name }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; border: 2px solid transparent; cursor: pointer; opacity: 0.6; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="if(!this.classList.contains('active-thumb')) this.style.opacity='0.6'">
+                {% endfor %}
+            </div>
+            
+        </div>
+
+
+        <div style="flex: 1; min-width: 300px;">
+            
+            <h1 style="color: var(--primary-color); margin-top: 0; margin-bottom: 10px; font-size: 2.2rem;">
+                {{ product.name }}
+            </h1>
+            
+            <p style="font-size: 2rem; color: var(--accent-color); font-weight: bold; margin-bottom: 25px; margin-top: 0;">
+                {{ product.price }} руб.
+            </p>
+
+            {% if product.short_features %}
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid var(--accent-color);">
+                    <p style="margin: 0; color: #555; font-size: 0.95rem; line-height: 1.5;">
+                        <strong style="color: #333;">Краткие параметры:</strong><br>
+                        {{ product.short_features }}
+                    </p>
+                </div>
+            {% endif %}
+
+            {% if product.variations.all %}
+                <div style="margin-bottom: 25px;">
+                    <label for="var-{{ product.id }}" style="display: block; margin-bottom: 8px; font-weight: bold; color: #333;">
+                        Выберите размер/диаметр:
+                    </label>
+                    <select id="var-{{ product.id }}" style="width: 100%; max-width: 300px; padding: 12px; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; cursor: pointer; background-color: #fff;">
+                        {% for var in product.variations.all %}
+                            <option value="{{ var.value }}">{{ var.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
+            <button class="btn add-to-cart-btn" data-id="{{ product.id }}" style="display: block; width: 100%; max-width: 300px; padding: 15px; font-size: 1.1rem; background-color: var(--accent-color); color: #1a252f; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; text-transform: uppercase; margin-bottom: 40px; transition: background-color 0.2s;">
+                В корзину
+            </button>
+            
+            <div style="line-height: 1.6; color: #444; border-top: 1px solid #eee; padding-top: 20px;">
+                <h3 style="margin-top: 0; color: var(--primary-color); margin-bottom: 15px;">Описание товара:</h3>
+                {{ product.description|linebreaks }}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div id="image-modal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(26, 37, 47, 0.95); align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px);">
+    
+    <span id="modal-close" style="position: absolute; top: 20px; right: 40px; color: white; font-size: 50px; font-weight: bold; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='white'">&times;</span>
+    
+    <div style="display: flex; align-items: center; justify-content: center; width: 100%; max-width: 1200px;">
+        <button id="modal-prev" style="background: none; border: none; color: white; font-size: 60px; cursor: pointer; padding: 20px; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='white'">&#10094;</button>
+        
+        <img id="modal-img" src="" style="max-width: 75vw; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        
+        <button id="modal-next" style="background: none; border: none; color: white; font-size: 60px; cursor: pointer; padding: 20px; transition: color 0.2s;" onmouseover="this.style.color='var(--accent-color)'" onmouseout="this.style.color='white'">&#10095;</button>
+    </div>
+    
+    <div id="modal-counter" style="color: white; margin-top: 20px; font-size: 1.2rem; letter-spacing: 1px;"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mainImage = document.getElementById('main-product-image');
+    const thumbs = document.querySelectorAll('.gallery-thumb');
+    
+    const modal = document.getElementById('image-modal');
+    const modalImg = document.getElementById('modal-img');
+    const modalClose = document.getElementById('modal-close');
+    const modalNext = document.getElementById('modal-next');
+    const modalPrev = document.getElementById('modal-prev');
+    const modalCounter = document.getElementById('modal-counter');
+
+    // Безопасность: если картинок нет, скрипт просто ничего не делает
+    if (!mainImage || thumbs.length === 0) return; 
+
+    let imagesList = Array.from(thumbs).map(thumb => thumb.src);
+    let currentIndex = 0;
+
+    // 1. Клик по миниатюрам
+    thumbs.forEach((thumb, index) => {
+        thumb.addEventListener('click', function() {
+            mainImage.src = this.src; 
+            currentIndex = index;     
+            
+            thumbs.forEach(t => {
+                t.classList.remove('active-thumb');
+                t.style.border = '2px solid transparent';
+                t.style.opacity = '0.6';
+            });
+            
+            this.classList.add('active-thumb');
+            this.style.border = '2px solid var(--accent-color)';
+            this.style.opacity = '1';
+        });
+    });
+
+    // 2. Открытие модального окна
+    mainImage.addEventListener('click', function() {
+        modal.style.display = 'flex';
+        updateModal();
+    });
+
+    // 3. Закрытие (крестик или клик мимо)
+    modalClose.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', (e) => {
+        if(e.target === modal) modal.style.display = 'none';
+    });
+
+    // 4. Листание
+    modalNext.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % imagesList.length;
+        updateModal();
+    });
+    
+    modalPrev.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + imagesList.length) % imagesList.length;
+        updateModal();
+    });
+
+    function updateModal() {
+        modalImg.src = imagesList[currentIndex];
+        modalCounter.innerText = `Фото ${currentIndex + 1} из ${imagesList.length}`;
+    }
+});
+</script>
+{% endblock %}

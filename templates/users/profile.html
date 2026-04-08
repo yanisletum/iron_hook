@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Личный кабинет - IRON HOOK{% endblock %}
+
+{% block content %}
+<div style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+    
+    <h1 style="color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; margin-bottom: 30px;">
+        Личный кабинет
+    </h1>
+
+    <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: flex-start;">
+
+        <div style="flex: 1; min-width: 300px; max-width: 400px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #eee; position: sticky; top: 20px;">
+            
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="width: 90px; height: 90px; background-color: var(--primary-color); color: var(--accent-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: bold; margin: 0 auto 15px; text-transform: uppercase;">
+                    {{ user.username|make_list|first }}
+                </div>
+                
+                <h2 style="margin: 0; color: #2c3e50; font-size: 1.8rem;">
+                    {{ user.first_name|default:user.username }}
+                </h2>
+                
+                <p style="color: #7f8c8d; margin-top: 8px; font-size: 1rem; margin-bottom: 5px;">
+                    ✉️ {{ user.email|default:"Email не указан" }}
+                </p>
+                <p style="color: #7f8c8d; margin-top: 0; font-size: 0.95rem;">
+                    📅 В клубе с: {{ user.date_joined|date:"d.m.Y" }}
+                </p>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
+            
+            <form action="{% url 'users:logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" style="width: 100%; padding: 15px; font-size: 1.1rem; background-color: transparent; color: #e74c3c; border: 2px solid #e74c3c; border-radius: 4px; font-weight: bold; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#e74c3c'; this.style.color='white';" onmouseout="this.style.backgroundColor='transparent'; this.style.color='#e74c3c';">
+                    Выйти из аккаунта
+                </button>
+            </form>
+        </div>
+
+        <div style="flex: 2; min-width: 300px;">
+            <h2 style="margin-top: 0; color: #333; margin-bottom: 20px;">История покупок</h2>
+
+            {% if orders %}
+                <div style="display: flex; flex-direction: column; gap: 25px;">
+                    {% for order in orders %}
+                    <div style="background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; overflow: hidden;">
+                        
+                        <div style="background: #f8f9fa; padding: 15px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <span style="font-weight: bold; color: #2c3e50; font-size: 1.2rem;">Заказ №{{ order.id }}</span>
+                                <span style="color: #7f8c8d; font-size: 1rem; margin-left: 10px;">{{ order.created|date:"d.m.Y в H:i" }}</span>
+                            </div>
+                            
+                            {% if order.paid %}
+                                <span style="background: #27ae60; color: white; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; text-transform: uppercase;">Оплачен</span>
+                            {% else %}
+                                <span style="background: #f39c12; color: white; padding: 5px 12px; border-radius: 4px; font-weight: bold; font-size: 0.9rem; text-transform: uppercase;">В обработке</span>
+                            {% endif %}
+                        </div>
+
+                        <div style="padding: 25px;">
+                            <ul style="list-style: none; padding: 0; margin: 0; margin-bottom: 15px;">
+                                {% for item in order.items.all %}
+                                    <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed #eee; padding-bottom: 12px; margin-bottom: 12px; font-size: 1.05rem;">
+                                        <span style="color: #34495e; font-weight: 500;">
+                                            {{ item.product.name }} 
+                                            <span style="color: #7f8c8d; font-size: 0.95rem;">(x{{ item.quantity }})</span>
+                                        </span>
+                                        <span style="font-weight: bold; color: #2c3e50;">{{ item.price|floatformat:2 }} руб.</span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <div style="text-align: right; margin-top: 20px; font-size: 1.3rem;">
+                                Итого: <strong style="color: var(--accent-color);">{{ order.get_total_cost|floatformat:2 }} руб.</strong>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            {% else %}
+                <div style="background: white; padding: 50px 30px; text-align: center; border-radius: 8px; border: 2px dashed #eee;">
+                    <div style="font-size: 4rem; margin-bottom: 15px;">🎣</div>
+                    <h3 style="color: #7f8c8d; margin-bottom: 10px; font-size: 1.5rem;">Ваш журнал улова пуст</h3>
+                    <p style="color: #999; margin-bottom: 25px; font-size: 1.1rem;">Вы еще не оформили ни одного заказа.</p>
+                    <a href="{% url 'shop:product_list' %}" style="display: inline-block; padding: 15px 30px; background-color: var(--accent-color); color: #1a252f; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 1.1rem; text-transform: uppercase; transition: background 0.2s;" onmouseover="this.style.backgroundColor='#16a085';" onmouseout="this.style.backgroundColor='var(--accent-color)';">
+                        Отправиться за покупками
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
