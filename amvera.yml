@@ -1,0 +1,14 @@
+meta:
+  environment: python
+  toolchain:
+    name: pip
+    version: 3.11
+
+build:
+  requirementsPath: requirements.txt
+
+run:
+  persistence:
+    - mountPath: /data/media
+      name: media
+  command: python manage.py runserver 0.0.0.0:80
