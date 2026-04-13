@@ -11,4 +11,4 @@ run:
   persistence:
     - mountPath: /data/media
       name: media
-  command: python manage.py runserver 0.0.0.0:80
+  command: gunicorn config.wsgi:application --bind 0.0.0.0:80
