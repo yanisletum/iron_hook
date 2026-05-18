@@ -14,7 +14,9 @@
             {% if post.image %}
                 <img src="{{ post.image.url }}" alt="{{ post.title }}" class="product-image" style="height: 200px; object-fit: cover; padding: 0;">
             {% else %}
-                <img src="{% static 'img/no_image.png' %}" class="product-image" style="height: 200px; object-fit: cover; background: #ccc; padding: 0;">
+                <div class="product-image" style="height: 200px; background: linear-gradient(135deg, #1a3a4a, #2d6a8a); display: flex; align-items: center; justify-content: center; padding: 0;">
+                    <span style="font-size: 3rem;">🎣</span>
+                </div>
             {% endif %}
             
             <h3 style="margin-top: 15px; color: var(--primary-color);">{{ post.title }}</h3>
