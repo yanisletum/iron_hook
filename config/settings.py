@@ -134,15 +134,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'static',
-]
+#STATICFILES_DIRS = [
+#    BASE_DIR / 'static',
+#]
 
 # Папка, куда соберутся все файлы для сервера
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Настройка WhiteNoise для работы со статикой
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # Медиа-файлы (фото товаров)
 MEDIA_URL = '/media/'
