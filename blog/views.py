@@ -8,18 +8,19 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
-
 def post_list(request):
-    posts = Post.objects.all()
+    # Показываем только опубликованные статьи, если они не черновики
+    posts = Post.objects.filter(is_draft=False).order_by('-created_at')
     return render(request, 'blog/post_list.html', {'posts': posts})
 
-def post_detail(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+def post_detail(request, pk):
+    # Используем pk вместо post_id для соответствия нашим новым urls.py
+    post = get_object_or_404(Post, pk=pk)
     return render(request, 'blog/post_detail.html', {'post': post})
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def api_create_post(request):
+def publish_post(request):
     api_key = request.headers.get('X-API-Key')
     if api_key != 'iron-hook-secret-key-2025':
         return JsonResponse({'error': 'Unauthorized'}, status=401)
@@ -29,6 +30,8 @@ def api_create_post(request):
         title = data.get('title', '').strip()
         content = data.get('content', '').strip()
         image_b64 = data.get('image_base64', None)
+        # Получаем статус черновика, по умолчанию True (все статьи от ИИ — черновики)
+        is_draft = data.get('is_draft', True) 
         
         if not title or not content:
             return JsonResponse({'error': 'title и content обязательны'}, status=400)
@@ -37,7 +40,13 @@ def api_create_post(request):
         if not author:
             return JsonResponse({'error': 'Нет суперпользователя'}, status=500)
         
-        post = Post.objects.create(title=title, content=content, author=author)
+        # Создаем пост с учетом нового поля is_draft
+        post = Post.objects.create(
+            title=title, 
+            content=content, 
+            author=author,
+            is_draft=is_draft
+        )
         
         if image_b64:
             image_data = base64.b64decode(image_b64)
@@ -48,7 +57,8 @@ def api_create_post(request):
             'success': True,
             'post_id': post.id,
             'title': post.title,
-            'url': f'/blog/{post.id}/'
+            'url': f'/blog/{post.id}/',
+            'is_draft': post.is_draft
         }, status=201)
         
     except json.JSONDecodeError:

@@ -7,6 +7,9 @@ class Post(models.Model):
     content = models.TextField(verbose_name="Текст статьи")
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True, verbose_name="Изображение")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
+    
+    # Это ключевое поле, которое мы добавили для работы с ИИ-агентами
+    is_draft = models.BooleanField(default=True, verbose_name="Черновик")
 
     class Meta:
         verbose_name = 'Статья'
@@ -15,4 +18,3 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-

@@ -5,6 +5,10 @@ app_name = 'blog'
 
 urlpatterns = [
     path('', views.post_list, name='post_list'),
-    path('<int:post_id>/', views.post_detail, name='post_detail'),
-    path('api/create/', views.api_create_post, name='api_create_post'),
+    
+    # Изменили post_id на pk, чтобы оно идеально совпадало с новым views.py
+    path('<int:pk>/', views.post_detail, name='post_detail'),
+    
+    # Заменили твой старый api/create/ на наш новый секретный шлюз
+    path('api/publish/', views.publish_post, name='publish_post'),
 ]
