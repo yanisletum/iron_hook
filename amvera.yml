@@ -8,5 +8,5 @@ build:
 run:
   persistenceMount: /data/media
   containerPort: 80
-  # Добавляем скрипт подготовки перед запуском основного процесса
-  command: python manage.py migrate && python manage.py loaddata datadump.json && gunicorn config.wsgi:application --bind 0.0.0.0:80
+  # Добавили collectstatic перед миграциями и запуском
+  command: python manage.py collectstatic --noinput && python manage.py migrate && python manage.py loaddata datadump.json && gunicorn config.wsgi:application --bind 0.0.0.0:80
