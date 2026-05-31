@@ -1,10 +1,18 @@
 from django.contrib import admin
 from .models import Post
 
+def make_published(modeladmin, request, queryset):
+    queryset.update(status='published')
+make_published.short_description = "Опубликовать выбранные статьи"
+
+def make_draft(modeladmin, request, queryset):
+    queryset.update(status='draft')
+make_draft.short_description = "Перевести в черновики"
+
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ['title', 'author', 'created_at']
-    list_filter = ['created_at', 'author']
+    list_display = ['title', 'author', 'status', 'created_at']
+    list_filter = ['status', 'created_at', 'author']
     search_fields = ['title', 'content']
-    date_hierarchy = 'created_at' # Удобная навигация по датам над списком
-
+    date_hierarchy = 'created_at'
+    actions = [make_published, make_draft]
