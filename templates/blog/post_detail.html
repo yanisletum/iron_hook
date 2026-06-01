@@ -17,7 +17,8 @@
     {% endif %}
 
     <div style="font-size: 1.1rem; line-height: 1.8; color: var(--text-color);">
-        {{ post.content|linebreaksbr }}
+        {% load markdown_extras %}
+        {{ post.content|render_markdown }}
     </div>
     
     <div style="margin-top: 3rem; text-align: center;">
